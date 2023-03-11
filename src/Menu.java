@@ -1,36 +1,34 @@
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.HashMap;
+import java.util.LinkedList;
 
 public class Menu {
     private final BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
 
-    public void mainMenu(HashMap<Integer, Daewo> daewoMap,
-                         HashMap<Integer, Lamborgini> lambaMap,
-                         HashMap<Integer, Jiga> jigaMap) throws IOException, InterruptedException {
+    public boolean mainMenu(LinkedList<Car> cars) throws IOException {
         System.out.println("""
                 1. Новая машина
                 2. Инфо по машине
                 3. Вывести инфо по всей линейке авто
                 4. Вывести инфо по всем авто
                 5. Тест драйв
+                Другое -- выход
                 """);
         String menu = reader.readLine();
+        boolean exit = true;
         switch (menu) {
-            case "1" -> newCar(daewoMap, lambaMap, jigaMap);
-            case "2" -> carInfo(daewoMap,lambaMap,jigaMap);
-            case "3" -> seriesInfo(daewoMap,lambaMap,jigaMap);
-            case "4" -> allCarsInfo(daewoMap,lambaMap,jigaMap);
-            case "5" -> testDrive(daewoMap,lambaMap,jigaMap);
-            default -> {
-            }
+            case "1" -> newCar(cars);
+            case "2" -> carInfo(cars);
+            case "3" -> seriesInfo(cars);
+            case "4" -> allCarsInfo(cars);
+            case "5" -> testDrive(cars);
+            default -> exit = false;
         }
+        return exit;
     }
 
-    private void newCar(HashMap<Integer, Daewo> daewoMap,
-                        HashMap<Integer, Lamborgini> lambaMap,
-                        HashMap<Integer, Jiga> jigaMap) throws IOException {
+    private void newCar(LinkedList<Car> cars) throws IOException {
         System.out.println("""
                 Выберите марку машины:
                 1. Део
@@ -43,64 +41,35 @@ public class Menu {
             case "1" -> {
                 Daewo daewo = new Daewo();
                 daewo.setInfo();
-                daewoMap.put(daewoMap.size(), daewo);
+                cars.add(daewo);
             }
             case "2" -> {
                 Lamborgini lamba = new Lamborgini();
                 lamba.setInfo();
-                lambaMap.put(lambaMap.size(), lamba);
+                cars.add(lamba);
             }
             case "3" -> {
                 Jiga jiga = new Jiga();
                 jiga.setInfo();
-                jigaMap.put(jigaMap.size(), jiga);
+                cars.add(jiga);
             }
             default -> {
             }
         }
 
     }
-    private void carInfo(HashMap<Integer, Daewo> daewoMap,
-                         HashMap<Integer, Lamborgini> lambaMap,
-                         HashMap<Integer, Jiga> jigaMap) throws IOException {
+
+    private void carInfo(LinkedList<Car> cars) throws IOException {
         System.out.println("""
-                Выберите марку машины:
-                1. Део
-                2. Ламба
-                3. Жига
-                Другая кнопка: Назад
+                Введите модель машины
                 """);
         String menu = reader.readLine();
-        int num;
-        switch (menu) {
-            case "1" -> {
-                Daewo daewo;
-                System.out.println("Введите номер");
-                num = Integer.parseInt(reader.readLine());
-                daewo = daewoMap.get(num);
-                daewo.dispInfo();
-            }
-            case "2" -> {
-                Lamborgini lamba;
-                System.out.println("Введите номер");
-                num = Integer.parseInt(reader.readLine());
-                lamba = lambaMap.get(num);
-                lamba.dispInfo();
-            }
-            case "3" -> {
-                Jiga jiga;
-                System.out.println("Введите номер");
-                num = Integer.parseInt(reader.readLine());
-                jiga = jigaMap.get(num);
-                jiga.dispInfo();
-            }
-            default -> {
-            }
-        }
+        cars.forEach(car -> {
+            if (menu.equals(car.getModel())) car.dispInfo();
+        });
     }
-    private void seriesInfo(HashMap<Integer, Daewo> daewoMap,
-                         HashMap<Integer, Lamborgini> lambaMap,
-                         HashMap<Integer, Jiga> jigaMap) throws IOException {
+
+    private void seriesInfo(LinkedList<Car> cars) throws IOException {
         System.out.println("""
                 Выберите марку машины:
                 1. Део
@@ -110,75 +79,39 @@ public class Menu {
                 """);
         String menu = reader.readLine();
         switch (menu) {
-            case "1" -> daewoMap.forEach((key,value) -> {
-                value.dispInfo();
-                System.out.println();
+            case "1" -> cars.forEach(car -> {
+                if ("Daewo".equals(car.getClass().getName())) car.dispInfo();
             });
-            case "2" -> lambaMap.forEach((key,value) -> {
-                value.dispInfo();
-                System.out.println();
+            case "2" -> cars.forEach(car -> {
+                if ("Lamborgini".equals(car.getClass().getName())) car.dispInfo();
             });
-            case "3" -> jigaMap.forEach((key,value) -> {
-                value.dispInfo();
-                System.out.println();
+            case "3" -> cars.forEach(car -> {
+                if ("Jiga".equals(car.getClass().getName())) car.dispInfo();
             });
             default -> {
             }
         }
     }
-    private void allCarsInfo(HashMap<Integer, Daewo> daewoMap,
-                             HashMap<Integer, Lamborgini> lambaMap,
-                             HashMap<Integer, Jiga> jigaMap){
-        daewoMap.forEach((key,value) -> {
-            value.dispInfo();
-            System.out.println();
-        });
-        lambaMap.forEach((key,value) -> {
-            value.dispInfo();
-            System.out.println();
-        });
-        jigaMap.forEach((key,value) -> {
-            value.dispInfo();
-            System.out.println();
-        });
+
+    private void allCarsInfo(LinkedList<Car> cars) {
+        cars.forEach(Car::dispInfo);
     }
-    private void testDrive(HashMap<Integer, Daewo> daewoMap,
-                           HashMap<Integer, Lamborgini> lambaMap,
-                           HashMap<Integer, Jiga> jigaMap) throws IOException, InterruptedException {
+
+    private void testDrive(LinkedList<Car> cars) throws IOException {
         System.out.println("""
-                Выберите марку машины:
-                1. Део
-                2. Ламба
-                3. Жига
-                Другая кнопка: Назад
+                Введите модель машины
                 """);
         String menu = reader.readLine();
-        int num;
-        switch (menu) {
-            case "1" -> {
-                Daewo daewo;
-                System.out.println("Введите номер");
-                num = Integer.parseInt(reader.readLine());
-                daewo = daewoMap.get(num);
-                daewo.testDrive();
+        cars.forEach(car -> {
+            if (menu.equals(car.getModel())) {
+                try {
+                    car.testDrive();
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
             }
-            case "2" -> {
-                Lamborgini lamba;
-                System.out.println("Введите номер");
-                num = Integer.parseInt(reader.readLine());
-                lamba = lambaMap.get(num);
-                lamba.testDrive();
-            }
-            case "3" -> {
-                Jiga jiga;
-                System.out.println("Введите номер");
-                num = Integer.parseInt(reader.readLine());
-                jiga = jigaMap.get(num);
-                jiga.testDrive();
-            }
-            default -> {
-            }
-        }
+        });
+
     }
 
 }

@@ -12,7 +12,7 @@ abstract class Car {
     private String model;
     private double engineCapacity;
     private double tankCapacity;
-    private BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
+    private final BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
     private void setModel() throws IOException {
         System.out.println("Enter car model");
         this.model=reader.readLine();
@@ -30,6 +30,9 @@ abstract class Car {
         setEngineCapacity();
         setTankCapacity();
     }
+    public String getModel(){
+        return this.model;
+    }
     public void dispInfo() {
         System.out.println("Model: "+this.model);
         System.out.println("Engine capacity: " + this.engineCapacity);
@@ -41,7 +44,7 @@ abstract class Car {
         startEngine();
         drive();
         parking();
-    };
+    }
     abstract void openDoor() throws InterruptedException;
     abstract void startEngine() throws InterruptedException;
     abstract void drive() throws InterruptedException;
